@@ -8,7 +8,6 @@ function create_grid(numPixel) {
     drawingBox.style.display = "flex";
     drawingBox.style.flexDirection = "column";
 
-
     for (let i = 0; i < numPixel; i++){    
         let row = document.createElement("div");
         row.style.display = "inline-flex";
@@ -16,13 +15,16 @@ function create_grid(numPixel) {
         row.style.margin = "0";
         for (let j = 0; j < numPixel; j++){
             let pixel = document.createElement("div");
+            pixel.classList.add("pixel");
             pixel.style.height = "10px"; 
             pixel.style.width = "10px";
-            pixel.addEventListener("mouseover", e => {
+            pixel.addEventListener("mousedown", e => {
                 e.target.style.backgroundColor = "black";
             })
-            pixel.addEventListener("mouseout", e => {
-                e.target.style.backgroundColor = "white";
+            pixel.addEventListener("mouseover" , e => {
+                if(isMouseDown == true){
+                    e.target.style.backgroundColor = "black";
+                }
             })
             row.appendChild(pixel);
         }
@@ -30,12 +32,28 @@ function create_grid(numPixel) {
     }
     container.appendChild(drawingBox);
 }
+
 function delete_grid() {
     let drawingBox = document.querySelector(".drawingBox");
     if (drawingBox){
         drawingBox.remove();
     }
 }
+
+function delete_all(){
+    let container = document.querySelector("#UI");
+    
+    let delete_drawing = document.createElement("button");
+    delete_drawing.innerText = ("Delete Drawing");
+    delete_drawing.addEventListener("click", e => {
+        let pixels = document.querySelectorAll(".pixel");
+        pixels.forEach(pixel => {
+            pixel.style.backgroundColor = "white";
+        })
+    })
+    container.appendChild(delete_drawing);
+}
+
 function prompt_size() {
     let container = document.querySelector("#UI");
     let size_button = document.createElement("button");
@@ -49,5 +67,9 @@ function prompt_size() {
     container.appendChild(size_button);
 }
 
+let isMouseDown = false;
+document.body.addEventListener("mousedown", () => isMouseDown = true);
+document.body.addEventListener("mouseup", () => isMouseDown = false);
 prompt_size();
-
+delete_all();
+create_grid(100);
